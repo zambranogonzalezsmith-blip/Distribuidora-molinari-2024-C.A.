@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribuidora Molinari 2024 | Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --azul: #003366; --rojo: #cc0000; --oro: #d4af37; }
+        .bg-molinari { background-color: var(--azul); }
+        .btn-comprar { background-color: var(--rojo); color: white; transition: 0.3s; }
+        .btn-comprar:hover { background-color: var(--azul); }
+        .cart-badge { background: var(--oro); color: black; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <nav class="bg-molinari text-white p-4 sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold italic tracking-tighter">DISTRIBUIDORA <span class="text-yellow-400">MOLINARI</span></h1>
+            <button onclick="verCarrito()" class="relative p-2">
+                <i class="fas fa-shopping-cart text-2xl"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 cart-badge text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <header class="bg-white border-b-4 border-yellow-500 py-8 text-center">
+        <h2 class="text-3xl font-black text-blue-900 uppercase">Víveres • Carnes • Embutidos</h2>
+        <p class="text-gray-500 italic mt-2">Calidad y frescura para su hogar en Distribuidora Molinari 2024 C.A.</p>
+    </header>
+
+    <main class="container mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="lista-productos">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">FOTO CARNE</div>
+                <div class="p-4">
+                    <span class="text-xs font-bold text-red-600 uppercase">Carnicería</span>
+                    <h3 class="text-lg font-bold">Pulpa Negra (Kg)</h3>
+                    <p class="text-2xl font-black text-blue-900">$7.50</p>
+                    <button onclick="agregarAlCarrito('Pulpa Negra', 7.50)" class="w-full mt-4 btn-comprar py-2 rounded font-bold uppercase text-sm">Agregar</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">FOTO VÍVERES</div>
+                <div class="p-4">
+                    <span class="text-xs font-bold text-blue-600 uppercase">Víveres</span>
+                    <h3 class="text-lg font-bold">Harina PAN (1Kg)</h3>
+                    <p class="text-2xl font-black text-blue-900">$1.20</p>
+                    <button onclick="agregarAlCarrito('Harina PAN', 1.20)" class="w-full mt-4 btn-comprar py-2 rounded font-bold uppercase text-sm">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-carrito" class="fixed inset-0 bg-black/80 hidden z-[100] p-4 flex items-center justify-center">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2">Tu Pedido</h3>
+            <div id="items-carrito" class="space-y-2 mb-6 text-sm"></div>
+            
+            <div class="border-t pt-4 mb-6">
+                <p class="flex justify-between font-bold text-xl">Total: <span id="total-precio">$0.00</span></p>
+            </div>
+
+            <form id="checkout-form" class="space-y-4">
+                <input type="text" placeholder="Nombre completo" required class="w-full border p-2 rounded">
+                <textarea placeholder="Dirección detallada para Delivery" required class="w-full border p-2 rounded"></textarea>
+                
+                <label class="block font-bold text-xs uppercase">Método de Pago:</label>
+                <select id="metodo-pago" required class="w-full border p-2 rounded">
+                    <option value="Pago Móvil">🇻🇪 Pago Móvil</option>
+                    <option value="USDT">🪙 USDT (Binance Pay)</option>
+                    <option value="Transferencia">🏦 Transferencia Bancaria</option>
+                    <option value="Efectivo">💵 Efectivo al recibir</option>
+                </select>
+
+                <div class="flex gap-2">
+                    <button type="button" onclick="cerrarCarrito()" class="flex-1 bg-gray-200 py-3 rounded font-bold">Cerrar</button>
+                    <button type="submit" class="flex-[2] bg-green-600 text-white py-3 rounded font-bold uppercase">Confirmar Pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let carrito = [];
+        let total = 0;
+
+        function agregarAlCarrito(nombre, precio) {
+            carrito.push({nombre, precio});
+            actualizarInterfaz();
+        }
+
+        function actualizarInterfaz() {
+            document.getElementById('cart-count').innerText = carrito.length;
+            const itemsContenedor = document.getElementById('items-carrito');
+            itemsContenedor.innerHTML = '';
+            total = 0;
+            carrito.forEach((item, index) => {
+                total += item.precio;
+                itemsContenedor.innerHTML += `<div class="flex justify-between"><span>${item.nombre}</span><b>$${item.precio.toFixed(2)}</b></div>`;
+            });
+            document.getElementById('total-precio').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function verCarrito() { document.getElementById('modal-carrito').classList.remove('hidden'); }
+        function cerrarCarrito() { document.getElementById('modal-carrito').classList.add('hidden'); }
+
+        document.getElementById('checkout-form').onsubmit = function(e) {
+            e.preventDefault();
+            const metodo = document.getElementById('metodo-pago').value;
+            alert(`✅ ¡Pedido Recibido!\nTotal: $${total.toFixed(2)}\nMétodo: ${metodo}\n\nEn breve nos comunicaremos con usted para confirmar el delivery.`);
+            carrito = [];
+            actualizarInterfaz();
+            cerrarCarrito();
+        };
+    </script>
+</body>
+</html>
