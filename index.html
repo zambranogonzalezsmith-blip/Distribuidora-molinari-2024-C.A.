@@ -84,13 +84,7 @@
         const TASA_DOLAR = 52.50; 
         const COSTO_DELIVERY = 2.00;
         
-        // IMPORTANTE: Agregué ".jpg" a tus archivos. Cámbialo si son .png o .jpeg
-        const productos = [
-            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "fotos/harina pan.jpeg" },
-            { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "fotos/arroz mary tradicional.jpg" },
-            { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "fotos/refresco glup.png" },
-            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "fotos/aceite la copiosa.jpeg" }
-        ];
+        
 
         let carrito = [];
         document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
@@ -112,7 +106,12 @@
             document.getElementById('cart-count').innerText = carrito.length;
         };
 
-        const abrirCarrito = () => {
+        const abrirCarrito = (const productos = [
+    { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "fotos/harina pan.png" }, // Si es PNG
+    { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "fotos/arroz mary tradicional.jpeg" }, // Si es JPEG
+    { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "fotos/refresco glup.jpg" }, // Si es JPG
+    { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "fotos/aceite la copiosa.png" }
+];) => {
             document.getElementById('modal-carrito').classList.remove('hidden');
             renderCarrito();
         };
