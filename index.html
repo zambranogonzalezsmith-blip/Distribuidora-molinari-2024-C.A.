@@ -59,12 +59,10 @@
 
             <form id="form-pago" class="grid grid-cols-1 gap-4">
                 <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-2 rounded w-full">
-                
                 <div class="flex items-center bg-yellow-50 p-3 rounded text-blue-900">
                     <input type="checkbox" id="querer-delivery" class="mr-2" onchange="toggleDireccion()">
                     <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery? (+$2.00)</label>
                 </div>
-
                 <div id="campo-direccion" class="hidden">
                     <textarea id="direccion" placeholder="Dirección exacta de entrega..." class="border p-2 rounded w-full text-sm" rows="2"></textarea>
                 </div>
@@ -84,7 +82,6 @@
         const TASA_DOLAR = 52.50; 
         const COSTO_DELIVERY = 2.00;
 
-        // LISTA DE PRODUCTOS ORDENADA
         const productos = [
             { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "fotos/harina pan.png" },
             { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "fotos/arroz mary tradicional.jpeg" },
@@ -98,11 +95,14 @@
         const renderProductos = () => {
             const container = document.getElementById('contenedor-productos');
             container.innerHTML = productos.map(p => {
-                // ESTO CORRIGE LOS ESPACIOS EN LAS IMÁGENES
                 const rutaLimpia = encodeURI(p.img);
                 return `
                     <div class="bg-white p-4 rounded-xl shadow-sm border producto-card text-center">
-                        <img src="${rutaLimpia}" class="w-full h-32 object-cover rounded mb-2" onerror="this.src='https://via.placeholder.com/150?text=Molinari'">
+                        <div class="relative h-32 w-full mb-2 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+                            <img src="${rutaLimpia}" 
+                                 class="w-full h-full object-cover" 
+                                 onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold\'>Error de ruta:<br>${p.img}</div>'">
+                        </div>
                         <h3 class="font-bold text-sm h-8 overflow-hidden">${p.nombre}</h3>
                         <p class="text-blue-900 font-black">$${p.precio.toFixed(2)}</p>
                         <button onclick="agregar(${p.id})" class="mt-2 bg-blue-100 text-blue-900 w-full py-1 rounded-lg font-bold hover:bg-blue-900 hover:text-white transition">Agregar</button>
@@ -159,53 +159,26 @@
             if(tieneDelivery && !direccion) return alert("Ingrese la dirección de entrega");
 
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(20);
-            doc.setTextColor(0, 32, 96);
             doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
-            doc.setFontSize(10);
-            doc.text("RIF: J-506588528", 105, 26, null, null, "center");
-            doc.line(20, 30, 190, 30);
-
             doc.text(`Cliente: ${cliente}`, 20, 40);
             if(tieneDelivery) doc.text(`Dirección: ${direccion}`, 20, 46);
 
             let y = 55;
             carrito.forEach(item => {
-                doc.text(`${item.nombre} ........... $${item.precio.toFixed(2)}`, 20, y);
+                doc.text(`${item.nombre} - $${item.precio.toFixed(2)}`, 20, y);
                 y += 8;
             });
 
             const totalFinal = calcularTotal();
-            doc.setFontSize(14);
-            doc.text(`TOTAL A PAGAR: $${totalFinal.toFixed(2)}`, 20, y + 10);
-            doc.text(`BS: ${(totalFinal * TASA_DOLAR).toFixed(2)} Bs`, 20, y + 20);
-
+            doc.text(`TOTAL: $${totalFinal.toFixed(2)}`, 20, y + 10);
             doc.save(`Factura_Molinari.pdf`);
             
             const mensaje = `Hola Molinari! Soy ${cliente}. Pedido: $${totalFinal.toFixed(2)}. ${tieneDelivery ? 'Delivery a: ' + direccion : 'Retiro en tienda.'}`;
             window.open(`https://wa.me/584129597573?text=${encodeURIComponent(mensaje)}`);
         }
 
-        const renderProductos = () => {
-    const container = document.getElementById('contenedor-productos');
-    container.innerHTML = productos.map(p => {
-        // Esta línea asegura que el navegador entienda los espacios
-        const rutaLimpia = encodeURI(p.img);
-        
-        return `
-            <div class="bg-white p-4 rounded-xl shadow-sm border producto-card text-center">
-                <div class="relative h-32 w-full mb-2 bg-gray-100 rounded overflow-hidden">
-                    <img src="${rutaLimpia}" 
-                         class="w-full h-full object-cover" 
-                         onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500\'>Error:<br>${p.img}</div>'">
-                </div>
-                <h3 class="font-bold text-sm h-8 overflow-hidden">${p.nombre}</h3>
-                <p class="text-blue-900 font-black">$${p.precio.toFixed(2)}</p>
-                <button onclick="agregar(${p.id})" class="mt-2 bg-blue-100 text-blue-900 w-full py-1 rounded-lg font-bold">Agregar</button>
-            </div>
-        `;
-    }).join('');
-};
+        // LLAMADA INICIAL PARA MOSTRAR PRODUCTOS
+        renderProductos();
     </script>
 </body>
 </html>
