@@ -201,14 +201,26 @@
 
             if(!nombre || !apellido) return alert("Por favor complete sus datos");
 
-            // GENERAR FACTURA PDF
-            doc.setFontSize(20);
-            doc.text("DISTRIBUIDORA MOLINARI 2024 C.A.", 20, 20);
-            doc.setFontSize(12);
-            doc.text(`Cliente: ${nombre} ${apellido}`, 20, 40);
-            doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 50);
-            doc.text(`Método de Pago: ${document.getElementById('metodo-pago').value}`, 20, 60);
-            doc.text("--------------------------------------------------", 20, 70);
+            function generarPDF() {
+    const doc = new jsPDF();
+    
+    // Configuración de fuente y color para el encabezado
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(0, 32, 96); // Azul Molinari
+    doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
+    
+    // LÍNEA DEL RIF - Agrégala justo debajo
+    doc.setFontSize(10);
+    doc.setTextColor(100); // Gris
+    doc.text("RIF: J-506588528", 105, 26, null, null, "center");
+    
+    // Línea separadora
+    doc.setLineWidth(0.5);
+    doc.line(20, 30, 190, 30);
+    
+    // ... (El resto de la lógica de productos y total que ya tienes)
+}
 
             let y = 80;
             carrito.forEach(item => {
