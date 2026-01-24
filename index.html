@@ -49,30 +49,32 @@
             <div id="lista-carrito" class="space-y-4 mb-6"></div>
 
             <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 my-4 shadow-sm">
-                <h3 class="text-blue-900 font-bold text-sm mb-2 uppercase">Datos de Pago Móvil</h3>
-                <div class="text-[13px] space-y-1">
-                    <p><strong>Banco:</strong> Bancamiga</p>
-                    <p><strong>Teléfono:</strong> 0412-9597573</p>
-                    <p><strong>RIF:</strong> J-506588528</p>
-                </div>
+                <h3 class="text-blue-900 font-bold text-sm mb-1 uppercase">Pago Móvil Bancamiga</h3>
+                <p class="text-xs">0412-9597573 | J-506588528</p>
             </div>
 
             <form id="form-pago" class="grid grid-cols-1 gap-4">
-                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-2 rounded w-full">
+                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-2 rounded w-full outline-blue-900">
                 <div class="flex items-center bg-yellow-50 p-3 rounded text-blue-900">
                     <input type="checkbox" id="querer-delivery" class="mr-2" onchange="toggleDireccion()">
                     <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery? (+$2.00)</label>
                 </div>
                 <div id="campo-direccion" class="hidden">
-                    <textarea id="direccion" placeholder="Dirección exacta de entrega..." class="border p-2 rounded w-full text-sm" rows="2"></textarea>
+                    <textarea id="direccion" placeholder="Dirección exacta de entrega..." class="border p-2 rounded w-full text-sm outline-blue-900" rows="2"></textarea>
                 </div>
             </form>
 
             <div class="mt-6 border-t pt-4">
-                <p class="text-3xl font-black text-blue-900" id="total-usd">$0.00</p>
-                <p class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</p>
-                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold mt-4 uppercase shadow-lg">
-                    Confirmar y Generar Factura
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-gray-600 font-bold">Total USD:</span>
+                    <span class="text-3xl font-black text-blue-900" id="total-usd">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600 font-bold">Total Bs:</span>
+                    <span class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</span>
+                </div>
+                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold uppercase shadow-lg hover:bg-blue-800 transition">
+                    Confirmar y Facturar
                 </button>
             </div>
         </div>
@@ -82,11 +84,12 @@
         const TASA_DOLAR = 52.50; 
         const COSTO_DELIVERY = 2.00;
 
+        // PRODUCTOS EN LA RAÍZ (Asegúrate de que los nombres coincidan exactamente)
         const productos = [
-            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img:"harina pan.png" },
-            { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img:"arroz mary tradicional.jpg" },
-            { id: 3, nombre: "Refresco Glup", precio: 1.50, img:"refresco glup.png" },
-            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img:"aceite la copiosa 850 ml.jpeg" }
+            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "harina pan.png" },
+            { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "arroz mary tradicional.jpg" },
+            { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "refresco glup.png" },
+            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "aceite la copiosa 850 ml.jpeg" }
         ];
 
         let carrito = [];
@@ -95,16 +98,16 @@
         const renderProductos = () => {
             const container = document.getElementById('contenedor-productos');
             container.innerHTML = productos.map(p => {
-                const rutaLimpia = encodeURI(p.img);
+                const rutaUrl = encodeURI(p.img);
                 return `
                     <div class="bg-white p-4 rounded-xl shadow-sm border producto-card text-center">
                         <div class="relative h-32 w-full mb-2 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
-                            <img src="${rutaLimpia}" 
+                            <img src="${rutaUrl}" 
                                  class="w-full h-full object-cover" 
-                                 onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold\'>Error de ruta:<br>${p.img}</div>'">
+                                 onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold\'>Falta archivo:<br>${p.img}</div>'">
                         </div>
-                        <h3 class="font-bold text-sm h-8 overflow-hidden">${p.nombre}</h3>
-                        <p class="text-blue-900 font-black">$${p.precio.toFixed(2)}</p>
+                        <h3 class="font-bold text-sm h-8 overflow-hidden leading-tight">${p.nombre}</h3>
+                        <p class="text-blue-900 font-black mt-1">$${p.precio.toFixed(2)}</p>
                         <button onclick="agregar(${p.id})" class="mt-2 bg-blue-100 text-blue-900 w-full py-1 rounded-lg font-bold hover:bg-blue-900 hover:text-white transition">Agregar</button>
                     </div>
                 `;
@@ -124,8 +127,7 @@
         const cerrarCarrito = () => document.getElementById('modal-carrito').classList.add('hidden');
 
         const toggleDireccion = () => {
-            const campo = document.getElementById('campo-direccion');
-            campo.classList.toggle('hidden', !document.getElementById('querer-delivery').checked);
+            document.getElementById('campo-direccion').classList.toggle('hidden', !document.getElementById('querer-delivery').checked);
             calcularTotal();
         };
 
@@ -156,7 +158,7 @@
             const tieneDelivery = document.getElementById('querer-delivery').checked;
 
             if(!cliente || carrito.length === 0) return alert("Faltan datos o el carrito está vacío");
-            if(tieneDelivery && !direccion) return alert("Ingrese la dirección de entrega");
+            if(tieneDelivery && !direccion) return alert("Ingrese la dirección para el delivery");
 
             doc.setFont("helvetica", "bold");
             doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
@@ -177,7 +179,6 @@
             window.open(`https://wa.me/584129597573?text=${encodeURIComponent(mensaje)}`);
         }
 
-        // LLAMADA INICIAL PARA MOSTRAR PRODUCTOS
         renderProductos();
     </script>
 </body>
