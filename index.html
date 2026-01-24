@@ -17,145 +17,91 @@
 <body>
 
     <nav class="molinari-header text-white p-3 sticky top-0 z-50 shadow-xl">
-    <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <img src="molinari.jpg" alt="Logo" class="h-14 w-14 rounded-full border-2 border-yellow-400 object-cover bg-white">
-            
-            <div>
-                <h1 class="text-xl font-black italic tracking-tighter leading-none">
-                    MOLINARI <span class="text-yellow-400">2024</span>
-                </h1>
-                <p class="text-[11px] font-bold text-gray-200 mt-1">RIF: J-506588528</p>
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="molinari.jpg" alt="Logo" class="h-14 w-14 rounded-full border-2 border-yellow-400 object-cover bg-white">
+                <div>
+                    <h1 class="text-xl font-black italic tracking-tighter leading-none">
+                        MOLINARI <span class="text-yellow-400">2024</span>
+                    </h1>
+                    <p class="text-[11px] font-bold text-gray-200 mt-1">RIF: J-506588528</p>
+                    <p class="text-[9px] text-blue-200 uppercase font-bold">Tasa: <span id="tasa-display">0.00</span> Bs</p>
+                </div>
             </div>
+            <button onclick="abrirCarrito()" class="bg-yellow-500 text-blue-900 px-4 py-2 rounded-full font-bold shadow-lg">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </button>
         </div>
-        
-        <button onclick="abrirCarrito()" class="bg-yellow-500 text-blue-900 px-4 py-2 rounded-full font-bold shadow-lg">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-count">0</span>
-        </button>
-    </div>
-</nav>
+    </nav>
 
     <main class="container mx-auto p-4 md:p-8">
-        <div class="flex gap-2 overflow-x-auto pb-4 mb-6">
-            <button class="bg-blue-900 text-white px-4 py-1 rounded-full text-sm">Todo</button>
-            <button class="bg-white border px-4 py-1 rounded-full text-sm">Víveres</button>
-            <button class="bg-white border px-4 py-1 rounded-full text-sm">Carnicería</button>
-            <button class="bg-white border px-4 py-1 rounded-full text-sm">Cesta Básica</button>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="contenedor-productos">
-            </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="contenedor-productos"></div>
     </main>
 
-    <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 my-4 shadow-sm">
-    <h3 class="text-blue-900 font-bold text-sm mb-2 flex items-center uppercase">
-        <i class="fas fa-university mr-2 text-blue-600"></i> Datos de Pago Móvil
-    </h3>
-    <div class="text-[13px] text-gray-800 space-y-2">
-        <p class="flex justify-between border-b border-blue-100 pb-1">
-            <span class="font-bold text-blue-700">Banco:</span> 
-            <span>Bancamiga</span>
-        </p>
-        <p class="flex justify-between border-b border-blue-100 pb-1">
-            <span class="font-bold text-blue-700">Teléfono:</span> 
-            <span>0412-9597573</span>
-        </p>
-        <p class="flex justify-between border-b border-blue-100 pb-1">
-            <span class="font-bold text-blue-700">RIF:</span> 
-            <span>J-506588528</span>
-        </p>
-        <p class="text-xs text-blue-600 italic mt-2 text-center">
-            * Al finalizar, envíe el comprobante por WhatsApp.
-        </p>
-    </div>
-</div>
-
-                <form id="form-pago" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2"><h3 class="font-bold border-b text-blue-800">Datos de Facturación</h3></div>
-                    <input type="text" id="nombre" placeholder="Nombres" required class="border p-2 rounded">
-                    <input type="text" id="apellido" placeholder="Apellidos" required class="border p-2 rounded">
-                    <input type="tel" id="telefono" placeholder="WhatsApp / Teléfono" required class="border p-2 rounded">
-                    
-                    <select id="metodo-pago" required class="border p-2 rounded bg-gray-50">
-                        <option value="">Método de Pago</option>
-                        <option value="Pago Movil">Pago Móvil</option>
-                        <option value="Transferencia">Transferencia Bancaria</option>
-                        <option value="USDT">USDT (Binance)</option>
-                        <option value="Efectivo">Efectivo (Solo en tienda/delivery)</option>
-                    </select>
-
-                    <div class="md:col-span-2 flex items-center bg-yellow-50 p-3 rounded">
-                        <input type="checkbox" id="querer-delivery" class="mr-2" onchange="calcularTotal()">
-                        <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery local? (+$2.00)</label>
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-gray-500 mb-1">Cargar Capture de Pago (Opcional):</label>
-                        <input type="file" id="capture" accept="image/*" class="text-xs">
-                    </div>
-                </form>
+    <div id="modal-carrito" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full overflow-y-auto p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black text-blue-900">Tu Pedido</h2>
+                <button onclick="cerrarCarrito()" class="text-gray-500 text-2xl">&times;</button>
             </div>
 
-            <div class="bg-gray-50 p-6 border-t">
-                <div class="flex justify-between items-end mb-4">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total a pagar:</p>
-                        <p class="text-3xl font-black text-blue-900" id="total-usd">$0.00</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-gray-500 text-sm">Total en Bs:</p>
-                        <p class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</p>
-                    </div>
+            <div id="lista-carrito" class="space-y-4 mb-6"></div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 my-4 shadow-sm">
+                <h3 class="text-blue-900 font-bold text-sm mb-2 uppercase">Datos de Pago Móvil</h3>
+                <div class="text-[13px] space-y-1">
+                    <p><strong>Banco:</strong> Bancamiga</p>
+                    <p><strong>Teléfono:</strong> 0412-9597573</p>
+                    <p><strong>RIF:</strong> J-506588528</p>
                 </div>
-                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold uppercase shadow-lg hover:bg-blue-800">
-                    Confirmar Pedido y Generar Factura
+            </div>
+
+            <form id="form-pago" class="grid grid-cols-1 gap-4">
+                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-2 rounded w-full">
+                <div class="flex items-center bg-yellow-50 p-3 rounded">
+                    <input type="checkbox" id="querer-delivery" class="mr-2" onchange="calcularTotal()">
+                    <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery? (+$2.00)</label>
+                </div>
+            </form>
+
+            <div class="mt-6 border-t pt-4">
+                <p class="text-3xl font-black text-blue-900" id="total-usd">$0.00</p>
+                <p class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</p>
+                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold mt-4 uppercase">
+                    Confirmar y Generar Factura
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE LA DISTRIBUIDORA
-        const TASA_DOLAR = 52.50; // Ajusta esto según el BCV/Paralelo
+        const TASA_DOLAR = 52.50; 
         const COSTO_DELIVERY = 2.00;
-
         const productos = [
-            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "https://via.placeholder.com/150", cat: "Víveres" },
-            { id: 2, nombre: "Arroz Primor 1Kg", precio: 1.10, img: "https://via.placeholder.com/150", cat: "Víveres" },
-            { id: 3, nombre: "Pulpa Negra Kg", precio: 7.80, img: "https://via.placeholder.com/150", cat: "Carnicería" },
-            { id: 4, nombre: "Cartón de Huevos", precio: 5.50, img: "https://via.placeholder.com/150", cat: "Cesta Básica" },
-            { id: 5, nombre: "Pasta 500g", precio: 0.90, img: "https://via.placeholder.com/150", cat: "Víveres" }
+            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "https://via.placeholder.com/150" },
+            { id: 2, nombre: "Arroz Primor 1Kg", precio: 1.10, img: "https://via.placeholder.com/150" },
+            { id: 3, nombre: "Pulpa Negra Kg", precio: 7.80, img: "https://via.placeholder.com/150" },
+            { id: 4, nombre: "Cartón de Huevos", precio: 5.50, img: "https://via.placeholder.com/150" }
         ];
 
         let carrito = [];
-
-        // INICIALIZACIÓN
         document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
+
         const renderProductos = () => {
             const container = document.getElementById('contenedor-productos');
             container.innerHTML = productos.map(p => `
                 <div class="bg-white p-4 rounded-xl shadow-sm border producto-card">
                     <img src="${p.img}" class="w-full h-32 object-cover rounded mb-2">
-                    <h3 class="font-bold text-sm h-10 overflow-hidden">${p.nombre}</h3>
-                    <div class="flex justify-between items-center mt-2">
-                        <div>
-                            <p class="text-blue-900 font-black">$${p.precio.toFixed(2)}</p>
-                            <p class="text-[10px] text-gray-500">${(p.precio * TASA_DOLAR).toFixed(2)} Bs</p>
-                        </div>
-                        <button onclick="agregar(${p.id})" class="bg-blue-100 text-blue-900 w-8 h-8 rounded-full font-bold">+</button>
-                    </div>
+                    <h3 class="font-bold text-sm">${p.nombre}</h3>
+                    <p class="text-blue-900 font-black">$${p.precio.toFixed(2)}</p>
+                    <button onclick="agregar(${p.id})" class="mt-2 bg-blue-100 text-blue-900 w-full py-1 rounded-lg font-bold">Agregar</button>
                 </div>
             `).join('');
         };
 
         const agregar = (id) => {
-            const prod = productos.find(p => p.id === id);
-            carrito.push(prod);
-            actualizarContador();
-        };
-
-        const actualizarContador = () => {
+            carrito.push(productos.find(p => p.id === id));
             document.getElementById('cart-count').innerText = carrito.length;
         };
 
@@ -163,85 +109,57 @@
             document.getElementById('modal-carrito').classList.remove('hidden');
             renderCarrito();
         };
-
         const cerrarCarrito = () => document.getElementById('modal-carrito').classList.add('hidden');
 
         const renderCarrito = () => {
             const lista = document.getElementById('lista-carrito');
             lista.innerHTML = carrito.map((item, index) => `
-                <div class="flex justify-between items-center text-sm">
+                <div class="flex justify-between border-b pb-2">
                     <span>${item.nombre}</span>
-                    <div class="flex items-center gap-4">
-                        <span class="font-bold">$${item.precio.toFixed(2)}</span>
-                        <button onclick="eliminar(${index})" class="text-red-500"><i class="fas fa-trash"></i></button>
-                    </div>
+                    <span class="font-bold">$${item.precio.toFixed(2)}</span>
                 </div>
             `).join('');
             calcularTotal();
         };
 
-        const eliminar = (index) => {
-            carrito.splice(index, 1);
-            actualizarContador();
-            renderCarrito();
-        };
-
         const calcularTotal = () => {
-            let subtotal = carrito.reduce((acc, item) => acc + item.precio, 0);
-            if (document.getElementById('querer-delivery').checked) subtotal += COSTO_DELIVERY;
-            
-            document.getElementById('total-usd').innerText = `$${subtotal.toFixed(2)}`;
-            document.getElementById('total-bs').innerText = `${(subtotal * TASA_DOLAR).toFixed(2)} Bs`;
-            return subtotal;
+            let total = carrito.reduce((acc, item) => acc + item.precio, 0);
+            if (document.getElementById('querer-delivery').checked) total += COSTO_DELIVERY;
+            document.getElementById('total-usd').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('total-bs').innerText = `${(total * TASA_DOLAR).toFixed(2)} Bs`;
+            return total;
         };
 
         async function finalizarCompra() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const total = calcularTotal();
+            const cliente = document.getElementById('nombre').value;
+            if(!cliente || carrito.length === 0) return alert("Faltan datos o el carrito está vacío");
 
-            if(!nombre || !apellido) return alert("Por favor complete sus datos");
+            // CABECERA PDF CON RIF
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(20);
+            doc.setTextColor(0, 32, 96);
+            doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
+            doc.setFontSize(10);
+            doc.text("RIF: J-506588528", 105, 26, null, null, "center");
+            doc.line(20, 30, 190, 30);
 
-            function generarPDF() {
-    const doc = new jsPDF();
-    
-    // Configuración de fuente y color para el encabezado
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.setTextColor(0, 32, 96); // Azul Molinari
-    doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
-    
-    // LÍNEA DEL RIF - Agrégala justo debajo
-    doc.setFontSize(10);
-    doc.setTextColor(100); // Gris
-    doc.text("RIF: J-506588528", 105, 26, null, null, "center");
-    
-    // Línea separadora
-    doc.setLineWidth(0.5);
-    doc.line(20, 30, 190, 30);
-    
-    // ... (El resto de la lógica de productos y total que ya tienes)
-}
-
-            let y = 80;
+            doc.text(`Cliente: ${cliente}`, 20, 40);
+            let y = 50;
             carrito.forEach(item => {
-                doc.text(`${item.nombre} - $${item.precio.toFixed(2)}`, 20, y);
-                y += 10;
+                doc.text(`${item.nombre} ........... $${item.precio.toFixed(2)}`, 20, y);
+                y += 8;
             });
 
-            doc.text("--------------------------------------------------", 20, y);
+            const totalFinal = calcularTotal();
             doc.setFontSize(14);
-            doc.text(`TOTAL A PAGAR: $${total.toFixed(2)}`, 20, y + 10);
-            doc.text(`TOTAL EN BOLÍVARES: ${(total * TASA_DOLAR).toFixed(2)} Bs`, 20, y + 20);
+            doc.text(`TOTAL: $${totalFinal.toFixed(2)} / Bs ${(totalFinal * TASA_DOLAR).toFixed(2)}`, 20, y + 10);
 
-            doc.save(`Factura_Molinari_${nombre}.pdf`);
-            alert("✅ Pedido Confirmado. Se ha descargado su factura. Por favor envíe el capture de pago por WhatsApp.");
+            doc.save(`Factura_Molinari.pdf`);
             
-            // Aquí podrías redirigir a WhatsApp automáticamente con el total
-            const mensaje = `Hola Molinari! Soy ${nombre}, acabo de generar mi pedido por $${total.toFixed(2)}. Adjunto capture.`;
-            window.open(`https://wa.me/584120000000?text=${encodeURIComponent(mensaje)}`);
+            const mensaje = `Hola Molinari! Soy ${cliente}, mi pedido es de $${totalFinal.toFixed(2)}. Ya generé la factura.`;
+            window.open(`https://wa.me/584129597573?text=${encodeURIComponent(mensaje)}`);
         }
 
         renderProductos();
