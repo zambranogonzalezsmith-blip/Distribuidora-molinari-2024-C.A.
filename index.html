@@ -45,16 +45,28 @@
             </div>
     </main>
 
-    <div id="modal-carrito" class="fixed inset-0 bg-black/70 hidden z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
-            <div class="p-6 overflow-y-auto flex-1">
-                <h2 class="text-2xl font-bold text-blue-900 mb-4 flex justify-between">
-                    Tu Pedido 
-                    <button onclick="cerrarCarrito()" class="text-gray-400">&times;</button>
-                </h2>
-                
-                <div id="lista-carrito" class="space-y-4 mb-6 border-b pb-4">
-                    </div>
+    <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 my-4 shadow-sm">
+    <h3 class="text-blue-900 font-bold text-sm mb-2 flex items-center uppercase">
+        <i class="fas fa-university mr-2 text-blue-600"></i> Datos de Pago Móvil
+    </h3>
+    <div class="text-[13px] text-gray-800 space-y-2">
+        <p class="flex justify-between border-b border-blue-100 pb-1">
+            <span class="font-bold text-blue-700">Banco:</span> 
+            <span>Bancamiga</span>
+        </p>
+        <p class="flex justify-between border-b border-blue-100 pb-1">
+            <span class="font-bold text-blue-700">Teléfono:</span> 
+            <span>0412-9597573</span>
+        </p>
+        <p class="flex justify-between border-b border-blue-100 pb-1">
+            <span class="font-bold text-blue-700">RIF:</span> 
+            <span>J-506588528</span>
+        </p>
+        <p class="text-xs text-blue-600 italic mt-2 text-center">
+            * Al finalizar, envíe el comprobante por WhatsApp.
+        </p>
+    </div>
+</div>
 
                 <form id="form-pago" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2"><h3 class="font-bold border-b text-blue-800">Datos de Facturación</h3></div>
