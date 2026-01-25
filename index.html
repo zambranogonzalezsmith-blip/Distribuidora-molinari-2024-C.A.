@@ -12,6 +12,9 @@
         body { background-color: #f4f7f6; }
         .molinari-header { background: linear-gradient(to right, #002855, #004080); }
         .producto-card:hover { transform: translateY(-5px); transition: 0.3s; }
+        /* Animación suave para el carrito */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -19,18 +22,18 @@
     <nav class="molinari-header text-white p-3 sticky top-0 z-50 shadow-xl">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="molinari.jpg" alt="Logo" class="h-14 w-14 rounded-full border-2 border-yellow-400 object-cover bg-white">
+                <img src="molinari.jpg" alt="Logo" class="h-14 w-14 rounded-full border-2 border-yellow-400 object-cover bg-white shadow-md">
                 <div>
                     <h1 class="text-xl font-black italic tracking-tighter leading-none">
                         MOLINARI <span class="text-yellow-400">2024</span>
                     </h1>
                     <p class="text-[11px] font-bold text-gray-200 mt-1">RIF: J-506588528</p>
-                    <p class="text-[9px] text-blue-200 uppercase font-bold italic">Tasa BCV: <span id="tasa-display">Cargando...</span> Bs</p>
+                    <p class="text-[9px] text-blue-200 uppercase font-bold italic">Tasa BCV: <span id="tasa-display" class="text-yellow-400">Cargando...</span> Bs</p>
                 </div>
             </div>
-            <button onclick="abrirCarrito()" class="bg-yellow-500 text-blue-900 px-4 py-2 rounded-full font-bold shadow-lg">
+            <button onclick="abrirCarrito()" class="relative bg-yellow-500 text-blue-900 px-4 py-2 rounded-full font-bold shadow-lg hover:bg-yellow-400 transition">
                 <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count">0</span>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
             </button>
         </div>
     </nav>
@@ -39,66 +42,72 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="contenedor-productos"></div>
     </main>
 
-    <div id="modal-carrito" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex justify-end">
-        <div class="bg-white w-full max-w-md h-full overflow-y-auto p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black text-blue-900 uppercase">Tu Pedido</h2>
-                <button onclick="cerrarCarrito()" class="text-gray-500 text-2xl">&times;</button>
-            </div>
+    <div id="modal-carrito" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex justify-end fade-in">
+        <div class="bg-white w-full max-w-md h-full overflow-y-auto p-6 shadow-2xl relative">
+            <button onclick="cerrarCarrito()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl transition">&times;</button>
+            
+            <h2 class="text-2xl font-black text-blue-900 uppercase mb-6 border-b pb-2">Tu Pedido</h2>
 
-            <div id="lista-carrito" class="space-y-4 mb-6"></div>
+            <div id="lista-carrito" class="space-y-4 mb-6 min-h-[100px]"></div>
 
-            <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 my-4 shadow-sm text-blue-900">
-                <h3 class="font-bold text-sm mb-1 uppercase text-center border-b border-blue-200 pb-1">Pago Móvil Bancamiga</h3>
-                <div class="text-[13px] flex flex-col items-center mt-2">
-                    <p><strong>0412-9597573</strong></p>
-                    <p><strong>RIF: J-506588528</strong></p>
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-900 my-4 shadow-sm text-blue-900">
+                <h3 class="font-bold text-sm mb-1 uppercase flex items-center gap-2">
+                    <i class="fas fa-mobile-alt"></i> Pago Móvil Bancamiga
+                </h3>
+                <div class="text-sm ml-6">
+                    <p>0412-9597573</p>
+                    <p>RIF: J-506588528</p>
                 </div>
             </div>
 
             <form id="form-pago" class="grid grid-cols-1 gap-4">
-                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-2 rounded w-full outline-blue-900">
-                <div class="flex items-center bg-yellow-50 p-3 rounded text-blue-900 border border-yellow-200">
-                    <input type="checkbox" id="querer-delivery" class="mr-2" onchange="toggleDireccion()">
-                    <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery? (+$2.00)</label>
+                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-3 rounded-lg w-full outline-blue-900 bg-gray-50 focus:bg-white transition">
+                
+                <div class="flex items-center bg-yellow-50 p-3 rounded-lg text-blue-900 border border-yellow-200 cursor-pointer" onclick="document.getElementById('querer-delivery').click()">
+                    <input type="checkbox" id="querer-delivery" class="mr-3 h-5 w-5 accent-blue-900" onchange="toggleDireccion(); event.stopPropagation();">
+                    <label for="querer-delivery" class="text-sm font-bold cursor-pointer select-none">¿Desea Delivery? (+$1.00)</label>
                 </div>
+
                 <div id="campo-direccion" class="hidden">
-                    <textarea id="direccion" placeholder="Dirección exacta de entrega..." class="border p-2 rounded w-full text-sm outline-blue-900" rows="2"></textarea>
+                    <textarea id="direccion" placeholder="Dirección exacta de entrega..." class="border p-3 rounded-lg w-full text-sm outline-blue-900 h-24 resize-none focus:ring-2 ring-blue-200"></textarea>
                 </div>
             </form>
 
-            <div class="mt-6 border-t pt-4">
+            <div class="mt-6 border-t pt-4 bg-gray-50 -mx-6 px-6 pb-6 mb-[-24px]">
                 <div class="flex justify-between items-center mb-1">
                     <span class="text-gray-600 font-bold">Total USD:</span>
                     <span class="text-3xl font-black text-blue-900" id="total-usd">$0.00</span>
                 </div>
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-gray-600 font-bold">Total Bs (BCV):</span>
-                    <span class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</span>
+                    <span class="text-xl font-bold text-green-700 bg-green-100 px-2 rounded" id="total-bs">0.00 Bs</span>
                 </div>
-                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold uppercase shadow-lg hover:bg-blue-800 transition">
-                    Confirmar y Facturar
+                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold uppercase shadow-lg hover:bg-blue-800 transition transform active:scale-95 flex justify-center items-center gap-2">
+                    <i class="fas fa-file-invoice"></i> Confirmar y Facturar
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN INICIAL
-        let TASA_DOLAR = 54.00; // Valor de respaldo por si falla el internet
-        const COSTO_DELIVERY = 1.00;
+        // --- CONFIGURACIÓN ---
+        let TASA_DOLAR = 54.00; // Respaldo
+        const COSTO_DELIVERY = 1.00; // CORREGIDO: Ahora coincide con el texto
 
+        // --- LISTA DE PRODUCTOS ---
+        // Nota: Asegúrate de subir una foto para el aceite vatel o se verá el icono por defecto
         const productos = [
             { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "harina pan.jpeg" },
             { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "arroz mary tradicional .jpg" },
             { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "refresco glup.png" },
-            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "aceite la copiosa 850 ml.jpeg" }
-            { id: 5, nombre: "Aceite vatel", precio: 3.50, img: "" }
+            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "aceite la copiosa 850 ml.jpeg" }, // AQUI FALTABA LA COMA
+            { id: 5, nombre: "Aceite Vatel 1L", precio: 3.50, img: "" } // Nombre corregido
         ];
 
         let carrito = [];
 
-        // FUNCIÓN PARA ACTUALIZAR TASA AUTOMÁTICAMENTE (BCV)
+        // --- LÓGICA DEL SISTEMA ---
+
         const obtenerTasaBCV = async () => {
             try {
                 const response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
@@ -106,11 +115,10 @@
                 if (data && data.promedio) {
                     TASA_DOLAR = data.promedio;
                     document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
-                    console.log("Tasa BCV actualizada:", TASA_DOLAR);
-                    calcularTotal(); // Recalcular por si el cliente ya tenía algo en el carrito
+                    calcularTotal();
                 }
             } catch (error) {
-                console.error("Error obteniendo tasa, usando respaldo:", TASA_DOLAR);
+                console.error("Usando tasa respaldo");
                 document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
             }
         };
@@ -119,23 +127,48 @@
             const container = document.getElementById('contenedor-productos');
             container.innerHTML = productos.map(p => {
                 const rutaUrl = encodeURI(p.img);
+                // Si no hay imagen (string vacío), mostramos un icono
+                const imagenHTML = p.img === "" 
+                    ? `<div class="w-full h-full flex flex-col items-center justify-center text-gray-300 bg-gray-50"><i class="fas fa-image text-3xl"></i><span class="text-[10px] mt-1">Sin Foto</span></div>`
+                    : `<img src="${rutaUrl}" class="w-full h-full object-cover transition hover:scale-110 duration-500" onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold flex flex-col items-center justify-center h-full\'><i class=\'fas fa-exclamation-circle text-2xl mb-1\'></i>Falta: ${p.img}</div>'">`;
+
                 return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border producto-card text-center">
-                        <div class="relative h-32 w-full mb-2 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
-                            <img src="${rutaUrl}" 
-                                 class="w-full h-full object-cover" 
-                                 onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold\'>Falta archivo:<br>${p.img}</div>'">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 producto-card text-center flex flex-col justify-between h-full">
+                        <div>
+                            <div class="relative h-32 w-full mb-3 bg-white rounded-lg overflow-hidden flex items-center justify-center border border-gray-100">
+                                ${imagenHTML}
+                            </div>
+                            <h3 class="font-bold text-sm h-10 overflow-hidden leading-tight text-gray-800">${p.nombre}</h3>
                         </div>
-                        <h3 class="font-bold text-sm h-8 overflow-hidden leading-tight">${p.nombre}</h3>
-                        <p class="text-blue-900 font-black mt-1">$${p.precio.toFixed(2)}</p>
-                        <button onclick="agregar(${p.id})" class="mt-2 bg-blue-100 text-blue-900 w-full py-1 rounded-lg font-bold hover:bg-blue-900 hover:text-white transition">Agregar</button>
+                        <div>
+                            <p class="text-blue-900 font-black text-lg my-1">$${p.precio.toFixed(2)}</p>
+                            <button onclick="agregar(${p.id})" class="w-full bg-blue-50 text-blue-900 py-2 rounded-lg font-bold text-xs hover:bg-blue-900 hover:text-white transition shadow-sm border border-blue-100">
+                                <i class="fas fa-plus mr-1"></i> AGREGAR
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
         };
 
         const agregar = (id) => {
-            carrito.push(productos.find(p => p.id === id));
+            const prod = productos.find(p => p.id === id);
+            carrito.push(prod);
+            actualizarContador();
+            
+            // Pequeña animación visual en el botón del carrito
+            const btnCart = document.querySelector('nav button');
+            btnCart.classList.add('scale-110');
+            setTimeout(() => btnCart.classList.remove('scale-110'), 200);
+        };
+
+        const eliminarItem = (index) => {
+            carrito.splice(index, 1);
+            actualizarContador();
+            renderCarrito();
+        };
+
+        const actualizarContador = () => {
             document.getElementById('cart-count').innerText = carrito.length;
         };
 
@@ -153,20 +186,36 @@
 
         const renderCarrito = () => {
             const lista = document.getElementById('lista-carrito');
-            lista.innerHTML = carrito.map((item, index) => `
-                <div class="flex justify-between border-b pb-2 text-sm">
-                    <span>${item.nombre}</span>
-                    <span class="font-bold">$${item.precio.toFixed(2)}</span>
-                </div>
-            `).join('');
+            if (carrito.length === 0) {
+                lista.innerHTML = `<p class="text-center text-gray-400 py-4">Tu carrito está vacío <i class="far fa-sad-tear"></i></p>`;
+            } else {
+                lista.innerHTML = carrito.map((item, index) => `
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3 last:border-0">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-50 w-8 h-8 rounded flex items-center justify-center text-blue-900 font-bold text-xs">1</div>
+                            <span class="text-sm text-gray-700 font-medium">${item.nombre}</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold text-blue-900">$${item.precio.toFixed(2)}</span>
+                            <button onclick="eliminarItem(${index})" class="text-gray-300 hover:text-red-500 transition">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
             calcularTotal();
         };
 
         const calcularTotal = () => {
             let total = carrito.reduce((acc, item) => acc + item.precio, 0);
             if (document.getElementById('querer-delivery').checked) total += COSTO_DELIVERY;
+            
             document.getElementById('total-usd').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('total-bs').innerText = `${(total * TASA_DOLAR).toFixed(2)} Bs`;
+            // Formato venezolano para los bolívares (coma decimal)
+            const bolivares = (total * TASA_DOLAR).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('total-bs').innerText = `${bolivares} Bs`;
+            
             return total;
         };
 
@@ -177,29 +226,72 @@
             const direccion = document.getElementById('direccion').value;
             const tieneDelivery = document.getElementById('querer-delivery').checked;
 
-            if(!cliente || carrito.length === 0) return alert("Faltan datos o el carrito está vacío");
-            if(tieneDelivery && !direccion) return alert("Ingrese la dirección para el delivery");
+            if(!cliente || carrito.length === 0) return alert("Por favor, ingresa tu nombre y agrega productos.");
+            if(tieneDelivery && !direccion) return alert("Para el delivery necesitamos tu dirección.");
 
+            // Encabezado PDF
+            doc.setFillColor(0, 40, 85); // Azul Molinari
+            doc.rect(0, 0, 210, 40, 'F');
             doc.setFont("helvetica", "bold");
-            doc.text("DISTRIBUIDORA MOLINARI 2024", 105, 20, null, null, "center");
-            doc.text(`Cliente: ${cliente}`, 20, 40);
-            if(tieneDelivery) doc.text(`Dirección: ${direccion}`, 20, 46);
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.text("MOLINARI 2024", 105, 20, { align: "center" });
+            doc.setFontSize(10);
+            doc.text("RIF: J-506588528 | Tienda Online", 105, 28, { align: "center" });
 
-            let y = 55;
+            // Datos Cliente
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text(`Cliente: ${cliente}`, 20, 50);
+            doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 50);
+            if(tieneDelivery) doc.text(`Dirección Entrega: ${direccion}`, 20, 56);
+
+            // Línea separadora
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, 62, 190, 62);
+
+            // Productos
+            let y = 70;
+            doc.setFontSize(10);
             carrito.forEach(item => {
-                doc.text(`${item.nombre} - $${item.precio.toFixed(2)}`, 20, y);
+                doc.text(item.nombre, 20, y);
+                doc.text(`$${item.precio.toFixed(2)}`, 180, y, { align: "right" });
                 y += 8;
             });
 
-            const totalFinal = calcularTotal();
-            doc.text(`TOTAL: $${totalFinal.toFixed(2)} (${(totalFinal * TASA_DOLAR).toFixed(2)} Bs)`, 20, y + 10);
-            doc.save(`Factura_Molinari.pdf`);
+            if(tieneDelivery) {
+                y += 2;
+                doc.text("Servicio de Delivery", 20, y);
+                doc.text(`$${COSTO_DELIVERY.toFixed(2)}`, 180, y, { align: "right" });
+                y += 8;
+            }
+
+            // Totales
+            doc.line(20, y, 190, y);
+            y += 10;
+            const totalUSD = calcularTotal();
+            const totalBs = (totalUSD * TASA_DOLAR).toLocaleString('es-VE', { minimumFractionDigits: 2 });
             
-            const mensaje = `Hola Molinari! Soy ${cliente}. Pedido: $${totalFinal.toFixed(2)}. ${tieneDelivery ? 'Delivery a: ' + direccion : 'Retiro en tienda.'}`;
-            window.open(`https://wa.me/584129597573?text=${encodeURIComponent(mensaje)}`);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text(`TOTAL A PAGAR: $${totalUSD.toFixed(2)}`, 180, y, { align: "right" });
+            doc.setFontSize(11);
+            doc.setTextColor(0, 100, 0); // Verde para Bs
+            doc.text(`Equivalente BCV: ${totalBs} Bs`, 180, y + 6, { align: "right" });
+            
+            doc.save(`Pedido_${cliente.replace(/\s+/g, '_')}.pdf`);
+            
+            // WhatsApp
+            const productosTexto = carrito.map(i => `• ${i.nombre}`).join('%0A');
+            const totalTexto = `$${totalUSD.toFixed(2)} (${totalBs} Bs)`;
+            const deliveryTexto = tieneDelivery ? `%0A📍 Dirección: ${direccion}` : '%0A🏪 Retiro en tienda';
+            
+            const mensaje = `👋 Hola Molinari! Soy *${cliente}*.%0A%0A📝 *MI PEDIDO:*%0A${productosTexto}%0A%0A💰 *TOTAL: ${totalTexto}*${deliveryTexto}`;
+            
+            window.open(`https://wa.me/584129597573?text=${mensaje}`);
         }
 
-        // INICIAR PROCESOS
+        // INICIAR
         obtenerTasaBCV();
         renderProductos();
     </script>
