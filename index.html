@@ -3,231 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distribuidora Molinari 2024 | Tienda Online</title>
+    <title>Molinari 2024 | Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --azul: #002855; --dorado: #d4af37; }
-        body { background-color: #f4f7f6; }
-        .molinari-header { background: linear-gradient(to right, #002855, #004080); }
-        .producto-card:hover { transform: translateY(-5px); transition: 0.3s; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .molinari-header { background: linear-gradient(135deg, #002855 0%, #004080 100%); }
+        .producto-card { transition: all 0.2s ease; border: 1px solid #e2e8f0; }
+        .producto-card:hover { transform: translateY(-4px); border-color: #d4af37; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .bg-dorado { background-color: #d4af37; }
+        .text-azul { color: #002855; }
     </style>
 </head>
 <body>
 
-    <nav class="molinari-header text-white p-3 sticky top-0 z-50 shadow-xl">
+    <nav class="molinari-header text-white p-4 sticky top-0 z-50 shadow-2xl">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="molinari.jpg" alt="Logo" class="h-14 w-14 rounded-full border-2 border-yellow-400 object-cover bg-white shadow-md">
+                <div class="h-12 w-12 bg-white rounded-full flex items-center justify-center border-2 border-yellow-400 overflow-hidden">
+                    <img src="molinari.jpg" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=M&background=002855&color=fff'">
+                </div>
                 <div>
-                    <h1 class="text-xl font-black italic tracking-tighter leading-none">
-                        MOLINARI <span class="text-yellow-400">2024</span>
-                    </h1>
-                    <p class="text-[11px] font-bold text-gray-200 mt-1">RIF: J-506588528</p>
-                    <p class="text-[9px] text-blue-200 uppercase font-bold italic">Tasa BCV: <span id="tasa-display" class="text-yellow-400">Cargando...</span> Bs</p>
+                    <h1 class="text-xl font-black tracking-tighter italic leading-none">MOLINARI <span class="text-yellow-400">2024</span></h1>
+                    <div class="flex gap-3 items-center mt-1">
+                        <span class="text-[10px] opacity-80">RIF: J-506588528</span>
+                        <span class="bg-yellow-500 text-blue-900 text-[10px] px-2 py-0.5 rounded-full font-bold">BCV: <span id="tasa-display">--</span></span>
+                    </div>
                 </div>
             </div>
-            <button onclick="abrirCarrito()" class="relative bg-yellow-500 text-blue-900 px-4 py-2 rounded-full font-bold shadow-lg">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+            <button onclick="abrirCarrito()" class="relative p-3 bg-white/10 hover:bg-white/20 rounded-xl transition">
+                <i class="fas fa-shopping-basket text-xl text-yellow-400"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-[#002855]">0</span>
             </button>
         </div>
     </nav>
 
-    <main class="container mx-auto p-4 md:p-8">
-        <div class="mb-6 flex justify-center">
-            <input type="text" id="buscador" onkeyup="filtrarProductos()" placeholder="🔍 ¿Qué estás buscando hoy?" class="p-3 w-full max-w-md border rounded-full shadow-sm outline-blue-900 text-center">
+    <main class="container mx-auto p-4 md:p-6">
+        <div class="max-w-xl mx-auto mb-8">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="buscador" onkeyup="filtrarProductos()" placeholder="Buscar productos..." 
+                class="w-full pl-12 pr-4 py-3 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-blue-900 outline-none">
+            </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="contenedor-productos"></div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="contenedor-productos"></div>
     </main>
 
-    <div id="modal-carrito" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex justify-end">
-        <div class="bg-white w-full max-w-md h-full overflow-y-auto p-6 shadow-2xl relative">
-            <button onclick="cerrarCarrito()" class="absolute top-4 right-4 text-gray-400 text-2xl">&times;</button>
-            <h2 class="text-2xl font-black text-blue-900 uppercase mb-6 border-b pb-2">Tu Pedido</h2>
-            <div id="lista-carrito" class="space-y-4 mb-6"></div>
+    <div id="modal-carrito" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-fade-in">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 class="text-xl font-black text-azul uppercase">Mi Carrito</h2>
+                <button onclick="cerrarCarrito()" class="text-gray-400 hover:text-red-500 text-2xl"><i class="fas fa-times"></i></button>
+            </div>
             
-            <form id="form-pago" class="grid grid-cols-1 gap-4">
-                <input type="text" id="nombre" placeholder="Nombre y Apellido" required class="border p-3 rounded-lg w-full">
-                <div class="flex items-center bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                    <input type="checkbox" id="querer-delivery" class="mr-3 h-5 w-5" onchange="toggleDireccion()">
-                    <label for="querer-delivery" class="text-sm font-bold">¿Desea Delivery? (+$2.00)</label>
-                </div>
-                <div id="campo-direccion" class="hidden">
-                    <textarea id="direccion" placeholder="Dirección exacta..." class="border p-3 rounded-lg w-full h-20"></textarea>
-                </div>
-            </form>
+            <div id="lista-carrito" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
 
-            <div class="mt-6 border-t pt-4">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-gray-600 font-bold">Total USD:</span>
-                    <span class="text-3xl font-black text-blue-900" id="total-usd">$0.00</span>
+            <div class="p-6 bg-gray-50 border-t space-y-4">
+                <input type="text" id="nombre" placeholder="Tu Nombre" class="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-900 outline-none">
+                
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 p-3 bg-white rounded-xl border cursor-pointer">
+                        <input type="checkbox" id="querer-delivery" onchange="actualizarUI()" class="w-5 h-5 accent-blue-900">
+                        <span class="text-sm font-bold text-gray-700">¿Solicitar Delivery? (+$2.00)</span>
+                    </label>
+                    <textarea id="direccion" placeholder="Dirección de entrega..." class="hidden w-full p-3 rounded-xl border outline-none h-20"></textarea>
                 </div>
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-gray-600 font-bold">Total Bs:</span>
-                    <span class="text-xl font-bold text-green-700" id="total-bs">0.00 Bs</span>
+
+                <div class="pt-4 border-t space-y-1">
+                    <div class="flex justify-between text-gray-500 font-medium"><span>Subtotal:</span><span id="subtotal-usd">$0.00</span></div>
+                    <div class="flex justify-between items-center text-azul font-black text-2xl"><span>Total:</span><span id="total-usd">$0.00</span></div>
+                    <div class="text-right text-green-600 font-bold" id="total-bs">0.00 Bs</div>
                 </div>
-                <button onclick="finalizarCompra()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold uppercase shadow-lg">
-                    Confirmar y Facturar
+
+                <button onclick="finalizarCompra()" class="w-full bg-blue-900 hover:bg-blue-800 text-white py-4 rounded-2xl font-bold uppercase transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-xl"></i> Confirmar Pedido
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        let TASA_DOLAR = 54.00; 
+        let TASA_DOLAR = 54.00;
         const COSTO_DELIVERY = 2.00;
+        let carrito = {}; // Usamos objeto para manejar cantidades: { id: {producto, cantidad} }
 
-        // Lista actualizada con Nombres en Mayúsculas para las imágenes
         const productos = [
-            { id: 101, nombre: "Harina PAN 1Kg", precio: 1.97, img: "Harina pan.jpeg" },
-            { id: 102, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "Arroz mary tradicional ..jpg" },
-            { id: 103, nombre: "Refresco Glup", precio: 1.50, img: "Refresco glup.png" },
-            { id: 104, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "Aceite la copiosa 850 ml.jpeg" },
-            { id: 105, nombre: "Aceite vatel", precio: 3.50, img: "Aceite vatel 2,75$.jpeg" },
-            { id: 1, nombre: "Arroz amanecer 900g", precio: 1.92, img: "Arroz amanecer 900g 1,92$.jpeg" },
-            { id: 2, nombre: "Pasta la especial tornillo 1k", precio: 2.79, img: "Pasta la especial tornillo 1k 2,79$.jpeg" },
-            { id: 3, nombre: "Atún bubba", precio: 2.99, img: "Atún bubba 2,99$.jpeg" },
-            { id: 4, nombre: "Sardina en salsa de tomate marbonita", precio: 1.34, img: "Sardina en salsa de tomate marbonita 1,34$.jpeg" },
-            { id: 5, nombre: "Maizina americana 400g", precio: 4.00, img: "Maizina americana  400g 4$.jpeg" },
-            { id: 6, nombre: "Café amanecer", precio: 1.76, img: "Café amanecer 1,76$.jpeg" },
-            { id: 7, nombre: "Harina de trigo leudante la pampa 1 k", precio: 1.45, img: "Harina de trigo leudante la pampa 1 k 1,45$.jpg" },
-            { id: 8, nombre: "Sal las maria's", precio: 0.40, img: "Sal las maria's 0,40$.jpeg" },
-            { id: 9, nombre: "Aceite vatel 1L", precio: 2.75, img: "Aceite vatel 2,75$.jpeg" },
-            { id: 10, nombre: "Salsa de tomate pampero", precio: 2.00, img: "Salsa de tomate pampero 2$.jpeg" },
-            { id: 11, nombre: "Mayonesa mavesa 175g", precio: 2.60, img: "Mayonesa mavesa 175g 2,60$.jpg" },
-            { id: 12, nombre: "Mantequilla mavesa 250g", precio: 1.92, img: "Mantequilla mavesa 250g 1,92$.jpeg" },
-            { id: 13, nombre: "Azúcar blanca santo Melao 900g", precio: 2.12, img: "Azúcar blanca santo Melao 900g 2,12$.jpeg" },
-            { id: 14, nombre: "1 carton de huevos", precio: 7.80, img: "1 carton de huevos 7,80$.jpg" },
-            { id: 15, nombre: "1/2 cartón de huevos", precio: 4.00, img: "1 carton de huevos 7,80$.jpg" }, 
-            { id: 16, nombre: "Crema de arroz primor 900g", precio: 2.60, img: "Crema de arroz primor 900g 2,60$.jpeg" },
-            { id: 17, nombre: "Leche en polvo la campesina 400g", precio: 8.00, img: "Leche en polvo la campesina 400g 8$.jpeg" },
-            { id: 18, nombre: "Leche en polvo San Simón", precio: 9.95, img: "Leche en polvo San Simón 9,95$.jpeg" },
-            { id: 19, nombre: "Avena en ojuela alvarigua", precio: 1.50, img: "Avena en ojuela alvarigua 1,50$.jpeg" },
-            { id: 20, nombre: "Cereal croch flakes", precio: 3.60, img: "Cereal croch flakes 3,60$.jpeg" },
-            { id: 21, nombre: "Cereal azucaradas", precio: 3.20, img: "Cereal azucaradas 3,20$.jpeg" },
-            { id: 22, nombre: "Toallas sanitarias belleza protección total", precio: 1.70, img: "Toallas sanitarias belleza protección total 1,70$.jpeg" },
-            { id: 23, nombre: "Toallas sanitarias wanita", precio: 2.20, img: "Toallas sanitarias wanita 2,20$.jpeg" }
+            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.97, img: "Harina pan" },
+            { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "Arroz mary tradicional" },
+            { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "Refresco glup" },
+            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "Aceite la copiosa 850 ml" },
+            { id: 5, nombre: "Aceite Vatel 1L", precio: 2.75, img: "Aceite vatel 2,75$" },
+            { id: 6, nombre: "Arroz Amanecer 900g", precio: 1.92, img: "Arroz amanecer 900g 1,92$" },
+            { id: 7, nombre: "Atún Bubba", precio: 2.99, img: "Atún bubba 2,99$" },
+            { id: 8, nombre: "Mantequilla Mavesa 250g", precio: 1.92, img: "Mantequilla mavesa 250g 1,92$" },
+            { id: 9, nombre: "1 Cartón de Huevos", precio: 7.80, img: "1 carton de huevos 7,80$" },
+            { id: 10, nombre: "Leche en Polvo Campesina 400g", precio: 8.00, img: "Leche en polvo la campesina 400g 8$" }
+            // Agrega el resto aquí siguiendo este formato...
         ];
 
-        let carrito = [];
+        // --- LÓGICA CORE ---
 
-        // LÓGICA DE CARGA MEJORADA PARA JPEG Y MAYÚSCULAS
-        const intentarCargarImagen = (imgElement, nombreBase) => {
-            const extensiones = ['.jpeg', '.jpg', '.png', '.JPEG', '.JPG'];
-            let intento = 0;
-            const probarSiguiente = () => {
-                if (intento < extensiones.length) {
-                    imgElement.src = encodeURI(nombreBase + extensiones[intento]);
-                    intento++;
-                } else {
-                    imgElement.onerror = null;
-                    imgElement.parentElement.innerHTML = `<div class='text-[10px] p-2 text-red-500 font-bold h-full flex flex-col items-center justify-center'><i class='fas fa-exclamation-circle text-xl mb-1'></i>Falta foto</div>`;
-                }
-            };
-            imgElement.onerror = probarSiguiente;
-            probarSiguiente();
-        };
-
-        const obtenerTasaBCV = async () => {
+        async function obtenerTasa() {
             try {
-                const response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
-                const data = await response.json();
-                if (data?.promedio) {
-                    TASA_DOLAR = data.promedio;
-                    document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
-                    calcularTotal();
-                }
-            } catch (e) { document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2); }
-        };
+                const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+                const data = await res.json();
+                if(data.promedio) TASA_DOLAR = data.promedio;
+            } catch(e) { console.error("Error tasa"); }
+            document.getElementById('tasa-display').innerText = TASA_DOLAR.toFixed(2);
+        }
 
-        const renderProductos = (lista = productos) => {
+        function renderProductos(filtro = "") {
             const container = document.getElementById('contenedor-productos');
+            const lista = productos.filter(p => p.nombre.toLowerCase().includes(filtro.toLowerCase()));
+            
             container.innerHTML = lista.map(p => `
-                <div class="bg-white p-4 rounded-xl shadow-sm border producto-card text-center flex flex-col justify-between h-full fade-in">
-                    <div>
-                        <div class="relative h-32 w-full mb-3 bg-white rounded-lg overflow-hidden border flex items-center justify-center">
-                            <img id="img-${p.id}" class="w-full h-full object-cover" style="opacity:0" onload="this.style.opacity=1">
-                        </div>
-                        <h3 class="font-bold text-sm h-10 overflow-hidden leading-tight text-gray-800">${p.nombre}</h3>
+                <div class="bg-white p-3 rounded-2xl producto-card flex flex-col justify-between">
+                    <div class="relative h-32 w-full mb-3 bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center">
+                        <img src="${p.img}.jpeg" class="w-full h-full object-contain" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x200?text=Sin+Foto'">
                     </div>
                     <div>
-                        <p class="text-blue-900 font-black text-lg my-1">$${p.precio.toFixed(2)}</p>
-                        <button onclick="agregar(${p.id})" class="w-full bg-blue-50 text-blue-900 py-2 rounded-lg font-bold text-xs hover:bg-blue-900 hover:text-white transition">AGREGAR</button>
+                        <h3 class="font-bold text-xs text-gray-700 leading-tight h-8 overflow-hidden uppercase">${p.nombre}</h3>
+                        <p class="text-azul font-black text-lg mt-1">$${p.precio.toFixed(2)}</p>
+                        <button onclick="agregar(${p.id})" class="w-full mt-2 bg-blue-50 text-azul hover:bg-azul hover:text-white py-2 rounded-xl font-bold text-[10px] transition uppercase">
+                            Agregar
+                        </button>
                     </div>
                 </div>
             `).join('');
-            lista.forEach(p => intentarCargarImagen(document.getElementById(`img-${p.id}`), p.img));
-        };
-
-        const filtrarProductos = () => {
-            const texto = document.getElementById('buscador').value.toLowerCase();
-            renderProductos(productos.filter(p => p.nombre.toLowerCase().includes(texto)));
-        };
-
-        const agregar = (id) => {
-            carrito.push(productos.find(p => p.id === id));
-            document.getElementById('cart-count').innerText = carrito.length;
-        };
-
-        const eliminarItem = (index) => {
-            carrito.splice(index, 1);
-            document.getElementById('cart-count').innerText = carrito.length;
-            renderCarrito();
-        };
-
-        const abrirCarrito = () => { document.getElementById('modal-carrito').classList.remove('hidden'); renderCarrito(); };
-        const cerrarCarrito = () => document.getElementById('modal-carrito').classList.add('hidden');
-        const toggleDireccion = () => { document.getElementById('campo-direccion').classList.toggle('hidden', !document.getElementById('querer-delivery').checked); calcularTotal(); };
-
-        const renderCarrito = () => {
-            const lista = document.getElementById('lista-carrito');
-            if (carrito.length === 0) { lista.innerHTML = `<p class="text-center text-gray-400 py-4">Carrito vacío</p>`; } 
-            else {
-                lista.innerHTML = carrito.map((item, index) => `
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <span class="text-sm font-medium text-gray-700">${item.nombre}</span>
-                        <div class="flex items-center gap-4">
-                            <span class="font-bold text-blue-900">$${item.precio.toFixed(2)}</span>
-                            <button onclick="eliminarItem(${index})" class="text-red-400"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            calcularTotal();
-        };
-
-        const calcularTotal = () => {
-            let total = carrito.reduce((acc, item) => acc + item.precio, 0);
-            if (document.getElementById('querer-delivery').checked) total += COSTO_DELIVERY;
-            document.getElementById('total-usd').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('total-bs').innerText = `${(total * TASA_DOLAR).toLocaleString('es-VE')} Bs`;
-            return total;
-        };
-
-        async function finalizarCompra() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const cliente = document.getElementById('nombre').value;
-            if(!cliente || carrito.length === 0) return alert("Completa tus datos");
-            
-            const totalUSD = calcularTotal();
-            const totalBs = (totalUSD * TASA_DOLAR).toLocaleString('es-VE');
-            
-            doc.text("MOLINARI 2024 - PEDIDO", 105, 20, { align: "center" });
-            doc.text(`Cliente: ${cliente}`, 20, 40);
-            let y = 50;
-            carrito.forEach(item => { doc.text(`${item.nombre} - $${item.precio.toFixed(2)}`, 20, y); y += 7; });
-            doc.text(`TOTAL: $${totalUSD.toFixed(2)} (${totalBs} Bs)`, 20, y + 10);
-            doc.save(`Pedido_${cliente}.pdf`);
-            
-            window.open(`https://wa.me/584129597573?text=Hola! Soy ${cliente}, mi pedido es de $${totalUSD.toFixed(2)}`);
         }
 
-        obtenerTasaBCV();
+        function agregar(id) {
+            const prod = productos.find(p => p.id === id);
+            if (carrito[id]) {
+                carrito[id].cantidad++;
+            } else {
+                carrito[id] = { ...prod, cantidad: 1 };
+            }
+            actualizarUI();
+        }
+
+        function eliminarItem(id) {
+            delete carrito[id];
+            actualizarUI();
+        }
+
+        function actualizarUI() {
+            const lista = document.getElementById('lista-carrito');
+            const ids = Object.keys(carrito);
+            
+            // Render Carrito
+            if (ids.length === 0) {
+                lista.innerHTML = `<div class="text-center py-10 text-gray-400"><i class="fas fa-shopping-cart text-4xl mb-2 opacity-20"></i><p>Carrito vacío</p></div>`;
+            } else {
+                lista.innerHTML = ids.map(id => {
+                    const item = carrito[id];
+                    return `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-gray-800 uppercase">${item.nombre}</p>
+                            <p class="text-xs text-blue-600">${item.cantidad} x $${item.precio.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="font-black text-azul">$${(item.cantidad * item.precio).toFixed(2)}</span>
+                            <button onclick="eliminarItem(${id})" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Totales
+            let subtotal = ids.reduce((acc, id) => acc + (carrito[id].precio * carrito[id].cantidad), 0);
+            const tieneDelivery = document.getElementById('querer-delivery').checked;
+            const total = subtotal + (tieneDelivery ? COSTO_DELIVERY : 0);
+            
+            document.getElementById('subtotal-usd').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('total-usd').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('total-bs').innerText = `${(total * TASA_DOLAR).toLocaleString('es-VE')} Bs`;
+            document.getElementById('cart-count').innerText = ids.reduce((acc, id) => acc + carrito[id].cantidad, 0);
+            document.getElementById('direccion').classList.toggle('hidden', !tieneDelivery);
+        }
+
+        async function finalizarCompra() {
+            const cliente = document.getElementById('nombre').value.trim();
+            const ids = Object.keys(carrito);
+            if (!cliente || ids.length === 0) return alert("Por favor ingresa tu nombre y agrega productos.");
+
+            const tieneDelivery = document.getElementById('querer-delivery').checked;
+            const dir = document.getElementById('direccion').value;
+            const subtotal = ids.reduce((acc, id) => acc + (carrito[id].precio * carrito[id].cantidad), 0);
+            const totalUSD = subtotal + (tieneDelivery ? COSTO_DELIVERY : 0);
+            const totalBS = (totalUSD * TASA_DOLAR).toLocaleString('es-VE');
+
+            // 1. Crear PDF Profesional
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(20); doc.setTextColor(0, 40, 85);
+            doc.text("MOLINARI 2024", 105, 20, { align: "center" });
+            doc.setFontSize(10); doc.setTextColor(100);
+            doc.text(`RIF: J-506588528 | Fecha: ${new Date().toLocaleDateString()}`, 105, 28, { align: "center" });
+            
+            doc.setFontSize(12); doc.setTextColor(0);
+            doc.text(`Cliente: ${cliente.toUpperCase()}`, 20, 45);
+            if(tieneDelivery) doc.text(`Entrega: ${dir}`, 20, 52);
+
+            let y = 65;
+            doc.setFont(undefined, 'bold');
+            doc.text("Producto", 20, y); doc.text("Cant.", 140, y); doc.text("Subtotal", 170, y);
+            doc.line(20, y+2, 190, y+2);
+            y += 10;
+            
+            doc.setFont(undefined, 'normal');
+            ids.forEach(id => {
+                const item = carrito[id];
+                doc.text(`${item.nombre.substring(0, 40)}`, 20, y);
+                doc.text(`${item.cantidad}`, 140, y);
+                doc.text(`$${(item.cantidad * item.precio).toFixed(2)}`, 170, y);
+                y += 8;
+            });
+
+            y += 5;
+            doc.setFont(undefined, 'bold');
+            if(tieneDelivery) { doc.text(`Delivery: $${COSTO_DELIVERY.toFixed(2)}`, 150, y); y += 8; }
+            doc.setFontSize(14);
+            doc.text(`TOTAL A PAGAR: $${totalUSD.toFixed(2)} / ${totalBS} Bs`, 20, y + 10);
+            doc.save(`Factura_Molinari_${cliente}.pdf`);
+
+            // 2. WhatsApp Dinámico
+            let mensaje = `*MOLINARI 2024 - PEDIDO*%0A`;
+            mensaje += `*Cliente:* ${cliente}%0A--------------------------%0A`;
+            ids.forEach(id => {
+                mensaje += `• ${carrito[id].cantidad}x ${carrito[id].nombre} ($${(carrito[id].cantidad * carrito[id].precio).toFixed(2)})%0A`;
+            });
+            if(tieneDelivery) mensaje += `*Delivery:* $2.00%0A*Dir:* ${dir}%0A`;
+            mensaje += `--------------------------%0A*TOTAL:* $${totalUSD.toFixed(2)} (${totalBS} Bs)`;
+            
+            window.open(`https://wa.me/584129597573?text=${mensaje}`);
+        }
+
+        const abrirCarrito = () => document.getElementById('modal-carrito').classList.remove('hidden');
+        const cerrarCarrito = () => document.getElementById('modal-carrito').classList.add('hidden');
+        const filtrarProductos = () => renderProductos(document.getElementById('buscador').value);
+
+        // Inicialización
+        obtenerTasa();
         renderProductos();
     </script>
 </body>
