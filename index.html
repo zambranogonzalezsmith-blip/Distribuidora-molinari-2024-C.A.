@@ -12,7 +12,6 @@
         body { background-color: #f4f7f6; }
         .molinari-header { background: linear-gradient(to right, #002855, #004080); }
         .producto-card:hover { transform: translateY(-5px); transition: 0.3s; }
-        /* Animación suave para el carrito */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -39,6 +38,10 @@
     </nav>
 
     <main class="container mx-auto p-4 md:p-8">
+        <div class="mb-6 flex justify-center">
+            <input type="text" id="buscador" onkeyup="filtrarProductos()" placeholder="🔍 ¿Qué estás buscando hoy?" class="p-3 w-full max-w-md border rounded-full shadow-sm outline-blue-900 text-center focus:ring-2 ring-yellow-400 transition">
+        </div>
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="contenedor-productos"></div>
     </main>
 
@@ -65,7 +68,7 @@
                 
                 <div class="flex items-center bg-yellow-50 p-3 rounded-lg text-blue-900 border border-yellow-200 cursor-pointer" onclick="document.getElementById('querer-delivery').click()">
                     <input type="checkbox" id="querer-delivery" class="mr-3 h-5 w-5 accent-blue-900" onchange="toggleDireccion(); event.stopPropagation();">
-                    <label for="querer-delivery" class="text-sm font-bold cursor-pointer select-none">¿Desea Delivery? (+$1.00)</label>
+                    <label for="querer-delivery" class="text-sm font-bold cursor-pointer select-none">¿Desea Delivery? (+$2.00)</label>
                 </div>
 
                 <div id="campo-direccion" class="hidden">
@@ -92,16 +95,33 @@
     <script>
         // --- CONFIGURACIÓN ---
         let TASA_DOLAR = 54.00; // Respaldo
-        const COSTO_DELIVERY = 1.00; // CORREGIDO: Ahora coincide con el texto
+        const COSTO_DELIVERY = 2.00; // Ajustado a $2.00 para coincidir con el texto
 
         // --- LISTA DE PRODUCTOS ---
-        // Nota: Asegúrate de subir una foto para el aceite vatel o se verá el icono por defecto
         const productos = [
-            { id: 1, nombre: "Harina PAN 1Kg", precio: 1.25, img: "harina pan.jpeg" },
-            { id: 2, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "arroz mary tradicional .jpg" },
-            { id: 3, nombre: "Refresco Glup", precio: 1.50, img: "refresco glup.png" },
-            { id: 4, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "aceite la copiosa 850 ml.jpeg" }, // AQUI FALTABA LA COMA
-            { id: 5, nombre: "Aceite Vatel 1L", precio: 3.50, img: "" } // Nombre corregido
+            { id: 1, nombre: "Arroz amanecer 900g", precio: 1.92, img: "Arroz amanecer 900g.jpg" },
+            { id: 2, nombre: "Pasta la especial tornillo 1k", precio: 2.79, img: "Pasta la especial tornillo 1k.jpg" },
+            { id: 3, nombre: "Atún bubba", precio: 2.99, img: "Atún bubba.jpg" },
+            { id: 4, nombre: "Sardina en salsa de tomate marbonita", precio: 1.34, img: "Sardina en salsa de tomate marbonita.jpg" },
+            { id: 5, nombre: "Maizina americana 400g", precio: 4.00, img: "Maizina americana 400g.jpg" },
+            { id: 6, nombre: "Café amanecer", precio: 1.76, img: "Café amanecer.jpg" },
+            { id: 7, nombre: "Harina de trigo leudante la pampa 1 k", precio: 1.45, img: "Harina de trigo leudante la pampa 1 k.jpg" },
+            { id: 8, nombre: "Sal las maria's", precio: 0.40, img: "Sal las maria's.jpg" },
+            { id: 9, nombre: "Aceite vatel", precio: 2.75, img: "Aceite vatel.jpg" },
+            { id: 10, nombre: "Salsa de tomate pampero", precio: 2.00, img: "Salsa de tomate pampero.jpg" },
+            { id: 11, nombre: "Mayonesa mavesa 175g", precio: 2.60, img: "Mayonesa mavesa 175g.jpg" },
+            { id: 12, nombre: "Mantequilla mavesa 250g", precio: 1.92, img: "Mantequilla mavesa 250g.jpg" },
+            { id: 13, nombre: "Azúcar blanca santo Melao 900g", precio: 2.12, img: "Azúcar blanca santo Melao 900g.jpg" },
+            { id: 14, nombre: "1 carton de huevos", precio: 7.80, img: "1 carton de huevos.jpg" },
+            { id: 15, nombre: "1/2 cartón de huevos", precio: 4.00, img: "medio carton de huevos.jpg" }, 
+            { id: 16, nombre: "Crema de arroz primor 900g", precio: 2.60, img: "Crema de arroz primor 900g.jpg" },
+            { id: 17, nombre: "Leche en polvo la campesina 400g", precio: 8.00, img: "Leche en polvo la campesina 400g.jpg" },
+            { id: 18, nombre: "Leche en polvo San Simón", precio: 9.95, img: "Leche en polvo San Simón.jpg" },
+            { id: 19, nombre: "Avena en ojuela alvarigua", precio: 1.50, img: "Avena en ojuela alvarigua.jpg" },
+            { id: 20, nombre: "Cereal croch flakes", precio: 3.60, img: "Cereal croch flakes.jpg" },
+            { id: 21, nombre: "Cereal azucaradas", precio: 3.20, img: "Cereal azucaradas.jpg" },
+            { id: 22, nombre: "Toallas sanitarias belleza protección total", precio: 1.70, img: "Toallas sanitarias belleza protección total.jpg" },
+            { id: 23, nombre: "Toallas sanitarias wanita", precio: 2.20, img: "Toallas sanitarias wanita.jpg" }
         ];
 
         let carrito = [];
@@ -123,20 +143,22 @@
             }
         };
 
-        const renderProductos = () => {
-            const container = document.getElementById('contenedor-productos');
-            container.innerHTML = productos.map(p => {
-                const rutaUrl = encodeURI(p.img);
-                // Si no hay imagen (string vacío), mostramos un icono
-                const imagenHTML = p.img === "" 
-                    ? `<div class="w-full h-full flex flex-col items-center justify-center text-gray-300 bg-gray-50"><i class="fas fa-image text-3xl"></i><span class="text-[10px] mt-1">Sin Foto</span></div>`
-                    : `<img src="${rutaUrl}" class="w-full h-full object-cover transition hover:scale-110 duration-500" onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold flex flex-col items-center justify-center h-full\'><i class=\'fas fa-exclamation-circle text-2xl mb-1\'></i>Falta: ${p.img}</div>'">`;
+        const filtrarProductos = () => {
+            const texto = document.getElementById('buscador').value.toLowerCase();
+            const productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
+            renderProductos(productosFiltrados);
+        };
 
+        const renderProductos = (lista = productos) => {
+            const container = document.getElementById('contenedor-productos');
+            container.innerHTML = lista.map(p => {
+                const rutaUrl = encodeURI(p.img);
                 return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 producto-card text-center flex flex-col justify-between h-full">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 producto-card text-center flex flex-col justify-between h-full fade-in">
                         <div>
                             <div class="relative h-32 w-full mb-3 bg-white rounded-lg overflow-hidden flex items-center justify-center border border-gray-100">
-                                ${imagenHTML}
+                                <img src="${rutaUrl}" class="w-full h-full object-cover transition hover:scale-110 duration-500" 
+                                onerror="this.parentElement.innerHTML='<div class=\'text-[10px] p-2 text-red-500 font-bold flex flex-col items-center justify-center h-full\'><i class=\'fas fa-exclamation-circle text-2xl mb-1\'></i>Falta: ${p.img}</div>'">
                             </div>
                             <h3 class="font-bold text-sm h-10 overflow-hidden leading-tight text-gray-800">${p.nombre}</h3>
                         </div>
@@ -156,7 +178,6 @@
             carrito.push(prod);
             actualizarContador();
             
-            // Pequeña animación visual en el botón del carrito
             const btnCart = document.querySelector('nav button');
             btnCart.classList.add('scale-110');
             setTimeout(() => btnCart.classList.remove('scale-110'), 200);
@@ -190,7 +211,7 @@
                 lista.innerHTML = `<p class="text-center text-gray-400 py-4">Tu carrito está vacío <i class="far fa-sad-tear"></i></p>`;
             } else {
                 lista.innerHTML = carrito.map((item, index) => `
-                    <div class="flex justify-between items-center border-b border-gray-100 pb-3 last:border-0">
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3 last:border-0 fade-in">
                         <div class="flex items-center gap-3">
                             <div class="bg-blue-50 w-8 h-8 rounded flex items-center justify-center text-blue-900 font-bold text-xs">1</div>
                             <span class="text-sm text-gray-700 font-medium">${item.nombre}</span>
@@ -212,7 +233,6 @@
             if (document.getElementById('querer-delivery').checked) total += COSTO_DELIVERY;
             
             document.getElementById('total-usd').innerText = `$${total.toFixed(2)}`;
-            // Formato venezolano para los bolívares (coma decimal)
             const bolivares = (total * TASA_DOLAR).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('total-bs').innerText = `${bolivares} Bs`;
             
@@ -229,8 +249,8 @@
             if(!cliente || carrito.length === 0) return alert("Por favor, ingresa tu nombre y agrega productos.");
             if(tieneDelivery && !direccion) return alert("Para el delivery necesitamos tu dirección.");
 
-            // Encabezado PDF
-            doc.setFillColor(0, 40, 85); // Azul Molinari
+            // Diseño Factura PDF
+            doc.setFillColor(0, 40, 85); 
             doc.rect(0, 0, 210, 40, 'F');
             doc.setFont("helvetica", "bold");
             doc.setTextColor(255, 255, 255);
@@ -239,24 +259,23 @@
             doc.setFontSize(10);
             doc.text("RIF: J-506588528 | Tienda Online", 105, 28, { align: "center" });
 
-            // Datos Cliente
             doc.setTextColor(0, 0, 0);
             doc.setFontSize(11);
             doc.text(`Cliente: ${cliente}`, 20, 50);
             doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 50);
             if(tieneDelivery) doc.text(`Dirección Entrega: ${direccion}`, 20, 56);
 
-            // Línea separadora
             doc.setDrawColor(200, 200, 200);
             doc.line(20, 62, 190, 62);
 
-            // Productos
             let y = 70;
             doc.setFontSize(10);
             carrito.forEach(item => {
-                doc.text(item.nombre, 20, y);
+                let nombreClean = item.nombre.length > 50 ? item.nombre.substring(0,50)+"..." : item.nombre;
+                doc.text(nombreClean, 20, y);
                 doc.text(`$${item.precio.toFixed(2)}`, 180, y, { align: "right" });
                 y += 8;
+                if(y > 270) { doc.addPage(); y = 20; } 
             });
 
             if(tieneDelivery) {
@@ -266,7 +285,6 @@
                 y += 8;
             }
 
-            // Totales
             doc.line(20, y, 190, y);
             y += 10;
             const totalUSD = calcularTotal();
@@ -276,12 +294,11 @@
             doc.setFont("helvetica", "bold");
             doc.text(`TOTAL A PAGAR: $${totalUSD.toFixed(2)}`, 180, y, { align: "right" });
             doc.setFontSize(11);
-            doc.setTextColor(0, 100, 0); // Verde para Bs
+            doc.setTextColor(0, 100, 0);
             doc.text(`Equivalente BCV: ${totalBs} Bs`, 180, y + 6, { align: "right" });
             
             doc.save(`Pedido_${cliente.replace(/\s+/g, '_')}.pdf`);
             
-            // WhatsApp
             const productosTexto = carrito.map(i => `• ${i.nombre}`).join('%0A');
             const totalTexto = `$${totalUSD.toFixed(2)} (${totalBs} Bs)`;
             const deliveryTexto = tieneDelivery ? `%0A📍 Dirección: ${direccion}` : '%0A🏪 Retiro en tienda';
