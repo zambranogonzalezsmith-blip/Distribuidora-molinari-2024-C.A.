@@ -81,14 +81,13 @@
         let TASA_DOLAR = 54.00; 
         const COSTO_DELIVERY = 2.00;
 
+        // Lista actualizada con Nombres en Mayúsculas para las imágenes
         const productos = [
-            // ANTIGUOS
-            { id: 101, nombre: "Harina PAN 1Kg", precio: 1.97, img: "harina pan" },
-            { id: 102, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "arroz mary tradicional " },
-            { id: 103, nombre: "Refresco Glup", precio: 1.50, img: "refresco glup" },
-            { id: 104, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "aceite la copiosa 850 ml" },
+            { id: 101, nombre: "Harina PAN 1Kg", precio: 1.97, img: "Harina pan" },
+            { id: 102, nombre: "Arroz Mary Tradicional 1Kg", precio: 1.10, img: "Arroz mary tradicional " },
+            { id: 103, nombre: "Refresco Glup", precio: 1.50, img: "Refresco glup" },
+            { id: 104, nombre: "Aceite La Copiosa 850ml", precio: 3.50, img: "Aceite la copiosa 850 ml" },
             { id: 105, nombre: "Aceite vatel", precio: 3.50, img: "Aceite vatel" },
-            // NUEVOS
             { id: 1, nombre: "Arroz amanecer 900g", precio: 1.92, img: "Arroz amanecer 900g" },
             { id: 2, nombre: "Pasta la especial tornillo 1k", precio: 2.79, img: "Pasta la especial tornillo 1k" },
             { id: 3, nombre: "Atún bubba", precio: 2.99, img: "Atún bubba" },
@@ -103,7 +102,7 @@
             { id: 12, nombre: "Mantequilla mavesa 250g", precio: 1.92, img: "Mantequilla mavesa 250g" },
             { id: 13, nombre: "Azúcar blanca santo Melao 900g", precio: 2.12, img: "Azúcar blanca santo Melao 900g" },
             { id: 14, nombre: "1 carton de huevos", precio: 7.80, img: "1 carton de huevos" },
-            { id: 15, nombre: "1/2 cartón de huevos", precio: 4.00, img: "medio carton de huevos" }, 
+            { id: 15, nombre: "1/2 cartón de huevos", precio: 4.00, img: "1 carton de huevos" }, 
             { id: 16, nombre: "Crema de arroz primor 900g", precio: 2.60, img: "Crema de arroz primor 900g" },
             { id: 17, nombre: "Leche en polvo la campesina 400g", precio: 8.00, img: "Leche en polvo la campesina 400g" },
             { id: 18, nombre: "Leche en polvo San Simón", precio: 9.95, img: "Leche en polvo San Simón" },
@@ -116,9 +115,9 @@
 
         let carrito = [];
 
-        // CARGA INTELIGENTE DE IMÁGENES
+        // LÓGICA DE CARGA MEJORADA PARA JPEG Y MAYÚSCULAS
         const intentarCargarImagen = (imgElement, nombreBase) => {
-            const extensiones = ['.jpeg', '.jpg', '.png', '.JPG', '.JPEG'];
+            const extensiones = ['.jpeg', '.jpg', '.png', '.JPEG', '.JPG'];
             let intento = 0;
             const probarSiguiente = () => {
                 if (intento < extensiones.length) {
