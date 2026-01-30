@@ -240,4 +240,41 @@
         renderProductos();
     </script>
 </body>
+    <div id="payment-overlay" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;">
+    
+    <h1 style="font-size: 3rem; color: #ff4d4d;">⚠️ ACCESO RESTRINGIDO</h1>
+    <p style="font-size: 1.5rem; margin-top: 10px;">
+        Esta plataforma (Tienda Molinari) ha sido <strong>SUSPENDIDA</strong> temporalmente.
+    </p>
+    <div style="background: #333; padding: 15px; border-radius: 8px; margin-top: 20px;">
+        <p style="font-size: 1.2rem; color: #ffcc00; margin: 0;">
+            Motivo: Suspensión por falta de pago.
+        </p>
+    </div>
+    <p style="margin-top: 30px; color: #aaa;">
+        Por favor, póngase en contacto con el administrador de sistemas para regularizar la situación.
+    </p>
+</div>
+
+<script>
+    // Bloquea el scroll de la página de fondo
+    document.body.style.overflow = 'hidden';
+    // Evita clics derecho para intentar inspeccionar fácilmente
+    document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
 </html>
